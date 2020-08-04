@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://www.github.com/Rudy-Zidan/jobi"
-  spec.metadata["changelog_uri"] = "https://www.github.com/Rudy-Zidan/jobi/CHANGELOG.md"
+  spec.metadata["changelog_uri"] = "https://www.github.com/Rudy-Zidan/jobi/blob/master/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -27,4 +27,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'bunny', ">= 2.14.1"
   spec.add_dependency 'logger'
+  spec.add_dependency 'rspec', "~> 3.0"
 end

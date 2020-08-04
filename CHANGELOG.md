@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.1] - 2020-08-04
+### Updated
+- Gemspec file.
+- Readme file.
 ## [0.1.0] - 2020-08-02
 ### Added
 - Initial Jobi structure.

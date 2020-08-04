@@ -83,8 +83,8 @@ class ExampleJob < Jobi::Job
 
     # Entry point of the job
     def initialize(arg1:, arg2:)
-        @arg1 = @arg1
-        @arg2 = @arg2
+        @arg1 = arg1
+        @arg2 = arg2
     end
 
     def run
