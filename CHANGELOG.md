@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.1] - 2020-08-22
+### Added
+- Queue durability.
+- Message persistence.
+### Updated
+- Gem dependency.
 ## [0.1.1] - 2020-08-04
 ### Updated
 - Gemspec file.

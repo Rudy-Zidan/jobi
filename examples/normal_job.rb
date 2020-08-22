@@ -5,7 +5,9 @@ require 'jobi'
 class NormalJob < Jobi::Job
   options queue_name: :calculators,
           ack: true,
-          consumers: 10
+          consumers: 10,
+          durable: true,
+          persist: true
 
   after_run :publish_result
 
