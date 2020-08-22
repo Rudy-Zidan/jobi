@@ -18,6 +18,7 @@ module Jobi
       before do
         @consumers = Jobs::DummyJob.instance_variable_get(:@consumer_threads)
       end
+
       it 'should have 2 consumers' do
         expect(@consumers.size).to eq(2)
       end

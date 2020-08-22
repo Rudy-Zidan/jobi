@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'bunny', ">= 2.14.1"
+  spec.add_dependency 'bunny', '>= 2.14.1'
   spec.add_dependency 'logger'
-  spec.add_dependency 'rspec', "~> 3.0"
+  spec.add_dependency 'rake', '~> 12.0'
 end

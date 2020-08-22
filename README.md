@@ -74,9 +74,13 @@ class ExampleJob < Jobi::Job
     # Queue name that will be used for publishing and consuming messages.
     # Force acknowledge of the message or not.
     # Number of consumers that will consume from this queue.
+    # Queue durability to survive broker restart, by default it is true.
+    # Message persistence to survive broker restart.
     options queue_name: :example,
             ack: true,
-            consumers: 5
+            consumers: 5,
+            durable: true,
+            persist: true
 
     # Will be called after run.
     after_run :print_sum

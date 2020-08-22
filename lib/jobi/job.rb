@@ -6,10 +6,12 @@ module Jobi
     class << self
       include Utils
 
-      def options(queue_name:, ack: false, consumers: 5)
+      def options(queue_name:, ack: false, consumers: 5, durable: true, persist: false)
         @queue_name = queue_name.to_s
         @ack = ack
         @consumers = consumers
+        @durable = durable
+        @persist = persist
       end
 
       def after_run(callback)
@@ -30,7 +32,6 @@ module Jobi
         return unless Jobi.consumer?
 
         join_queue
-
         @consumer_threads = []
         @consumers.times do
           @consumer_threads << Thread.new { consumer.consume! }
@@ -59,15 +60,12 @@ module Jobi
 
       def join_queue
         @queue = Jobi.session
-                     .queue(name: @queue_name)
+                     .queue(**build_queue_params)
       end
 
       def publish_message
         Jobi.session
-            .publish(
-              message: Marshal.dump(@message),
-              queue: @queue
-            )
+            .publish(**build_message_params)
       end
 
       def create_message(args:)
@@ -83,6 +81,25 @@ module Jobi
         Jobi.logger.debug("Queue: '#{@queue_name}'")
         Jobi.logger.debug("Args: #{@message.args}")
         Jobi.logger.debug("Job class: '#{@message.job_class}'")
+      end
+
+      def build_queue_params
+        {
+          name: @queue_name,
+          options: {
+            durable: @durable
+          }
+        }
+      end
+
+      def build_message_params
+        {
+          message: Marshal.dump(@message),
+          queue: @queue,
+          options: {
+            persist: @persist
+          }
+        }
       end
     end
   end

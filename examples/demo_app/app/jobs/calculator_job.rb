@@ -1,7 +1,9 @@
 class CalculatorJob < ApplicationJob
   options queue_name: :calculator,
           ack: true,
-          consumers: 5
+          consumers: 5,
+          durable: true,
+          persist: true
 
   def initialize(number1:, number2:)
     @number1 = number1

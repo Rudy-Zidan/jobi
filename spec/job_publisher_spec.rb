@@ -28,6 +28,12 @@ module Jobi
         queue = Jobs::DummyJob.instance_variable_get(:@queue)
         expect(queue.message_count).to be(1)
       end
+
+      it 'should publish a persistable message to the queue' do
+        queue = Jobs::DummyJob.instance_variable_get(:@queue)
+        delivery_info, metadata, payload = queue.pop
+        expect(metadata[:persistent]).to be_truthy
+      end
     end
 
     after do
