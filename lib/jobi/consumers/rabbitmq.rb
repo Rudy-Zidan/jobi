@@ -9,10 +9,11 @@ module Jobi
         @ack = ack
       end
 
-      def consume!
+      def consume!(consumer_name:)
         @queue.subscribe(manual_ack: @ack) do |delivery_info, metadata, payload|
-          Jobi::Runner.new(payload: payload).run
+          id = Jobi::Runner.new(payload: payload).run
           acknowledge!(delivery_info.delivery_tag) if @ack
+          Jobi.logger.info(%{comsumer: "#{consumer_name}" just consumed jid: #{id}})
         end
       end
 

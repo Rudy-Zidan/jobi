@@ -6,7 +6,7 @@ module Jobi
     class << self
       include Utils
 
-      def options(queue_name:, ack: false, consumers: 5, durable: true, persist: false)
+      def options(queue_name:, ack: false, consumers: 5, durable: true, persist: false, delay: nil)
         @queue_name = queue_name.to_s
         @ack = ack
         @consumers = consumers
@@ -28,13 +28,21 @@ module Jobi
         Jobi.logger.error(e)
       end
 
+      def delayed_run(delay, **args)
+        @delay = delay
+        run(args)
+      end
+
       def consume_messages
         return unless Jobi.consumer?
 
         join_queue
         @consumer_threads = []
-        @consumers.times do
-          @consumer_threads << Thread.new { consumer.consume! }
+        @consumers.times do |n|
+          @consumer_threads << Thread.new do
+            sleep Random.new.rand
+            consumer.consume!(consumer_name: "consumer_#{n}")
+          end
         end
 
         @consumer_threads.join(&:join)
@@ -87,7 +95,8 @@ module Jobi
         {
           name: @queue_name,
           options: {
-            durable: @durable
+            durable: @durable,
+            delay: @delay
           }
         }
       end
@@ -97,7 +106,8 @@ module Jobi
           message: Marshal.dump(@message),
           queue: @queue,
           options: {
-            persist: @persist
+            persist: @persist,
+            delay: @delay
           }
         }
       end

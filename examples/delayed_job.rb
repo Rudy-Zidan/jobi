@@ -2,7 +2,9 @@ $: << File.expand_path('../lib', File.dirname(__FILE__))
 
 require 'jobi'
 
-class NormalJob < Jobi::Job
+$done = 0
+
+class DelayedJob < Jobi::Job
   options queue_name: :calculators,
           ack: true,
           consumers: 10,
@@ -21,6 +23,7 @@ class NormalJob < Jobi::Job
   end
 
   def publish_result
+    $done += 1
     puts "publishing result: #{@sum}"
   end
 end
@@ -29,15 +32,15 @@ Jobi.configure do |config|
   config.rabbitmq
   config.act_as_publisher = true
   config.act_as_consumer = true
-  config.jobs = ['NormalJob']
+  config.jobs = ['DelayedJob']
 end
 
 started_at = Time.now.to_f
 
 (1..ENV['TIMES'].to_i).each do
-  NormalJob.run(a: 1, b: 2)
+  DelayedJob.delayed_run(10000, a: 1, b: 2)
 end
 
-puts "took: #{Time.now.to_f - started_at}"
+while $done < ENV['TIMES'].to_i; sleep 10 end
 
-loop {}
+puts "took: #{Time.now.to_f - started_at}"

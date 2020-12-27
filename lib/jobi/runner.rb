@@ -14,12 +14,14 @@ module Jobi
       job.send(@message.after_run) if @message.after_run
 
       Jobi.logger.info("Completed in: #{job_duration}")
+
+      @message.id
     end
 
     private
 
     def job_duration
-      Time.now.to_f - @message.started_at
+      Time.now.to_f - @message.started_at.to_f
     end
   end
 end
