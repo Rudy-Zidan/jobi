@@ -2,8 +2,8 @@ $: << File.expand_path('../lib', File.dirname(__FILE__))
 
 require 'jobi'
 
-class NormalJob < Jobi::Job
-  options queue_name: :calculators,
+class FirstJob < Jobi::Job
+  options queue_name: :first,
           ack: true,
           consumers: 10,
           durable: true,
@@ -22,12 +22,12 @@ class NormalJob < Jobi::Job
   end
 
   def publish_result
-    puts "publishing result: #{@sum}"
+    puts "[1] publishing result: #{@sum}"
   end
 end
 
-class NormalSecondJob < Jobi::Job
-  options queue_name: :second_calculators,
+class SecondJob < Jobi::Job
+  options queue_name: :second,
           ack: true,
           consumers: 10,
           durable: true,
@@ -54,13 +54,14 @@ Jobi.configure do |config|
   config.rabbitmq
   config.act_as_publisher = true
   config.act_as_consumer = true
-  config.jobs = ['NormalJob']
+  config.jobs = ['FirstJob', 'SecondJob']
 end
 
 started_at = Time.now.to_f
 
 (1..ENV['TIMES'].to_i).each do
-  NormalJob.run(a: 1, b: 2)
+  FirstJob.run(a: 1, b: 2)
+  SecondJob.run(a: 1, b: 2)
 end
 
 puts "took: #{Time.now.to_f - started_at}"

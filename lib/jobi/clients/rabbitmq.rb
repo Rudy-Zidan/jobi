@@ -13,12 +13,13 @@ module Jobi
       }.freeze
 
       def initialize(config = Jobi::Config::Rabbitmq.new)
+        @channels = {}
         @connection = Bunny.new(config.to_h)
         @connection.start
       end
 
-      def channel
-        @channel ||= @connection.create_channel
+      def create_channel(queue_name)
+        @channels[queue_name] ||= @connection.create_channel
       end
 
       def default_exchange
@@ -26,7 +27,8 @@ module Jobi
       end
 
       def queue(name:, options: {})
-        default_exchange
+        channel = create_channel(name)
+        channel.prefetch(options[:qos])
         channel.queue(name, build_options(options, QUEUE_OPTIONS))
       end
 

@@ -6,12 +6,13 @@ module Jobi
     class << self
       include Utils
 
-      def options(queue_name:, ack: false, consumers: 5, durable: true, persist: false)
-        @queue_name = queue_name.to_s
-        @ack = ack
-        @consumers = consumers
-        @durable = durable
-        @persist = persist
+      def options(options = {})
+        @queue_name = options[:queue_name].to_s
+        @qos = options[:qos] || 5
+        @ack = options[:ack] || false
+        @consumers = options[:consumers] || 5
+        @durable = options[:durable] || true
+        @persist = options[:persist] ||false
       end
 
       def after_run(callback)
@@ -87,7 +88,8 @@ module Jobi
         {
           name: @queue_name,
           options: {
-            durable: @durable
+            durable: @durable,
+            qos: @qos
           }
         }
       end
