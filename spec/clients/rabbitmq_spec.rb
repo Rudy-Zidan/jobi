@@ -22,10 +22,31 @@ module Jobi
       end
 
       context 'channel creation' do
-        it 'should declare an instance variable called channel' do
-          client.channel
-          @channel = client.instance_variable_get(:@channel)
-          expect(@channel).to be_truthy
+        it 'should have an instance variable called channels' do
+          queue_name = 'test_queue'
+          client.create_channel(queue_name)
+          channels = client.instance_variable_get(:@channels)
+
+          expect(channels).to be_truthy
+          expect(channels.class).to be(Hash)
+          expect(channels.keys.first).to eq(queue_name)
+        end
+
+        it 'should create channel per queue' do
+          first_queue_name = 'first_queue'
+          second_queue_name = 'second_queue'
+
+          [first_queue_name, second_queue_name].each do |queue_name|
+            client.create_channel(queue_name)
+          end
+          
+          channels = client.instance_variable_get(:@channels)
+
+          expect(channels).to be_truthy
+          expect(channels.class).to be(Hash)
+          expect(channels.keys.size).to eq(2)
+          expect(channels.keys.first).to eq(first_queue_name)
+          expect(channels.keys.last).to eq(second_queue_name)
         end
       end
 
