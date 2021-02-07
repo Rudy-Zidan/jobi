@@ -8,7 +8,7 @@ class NormalJob < Jobi::Job
           consumers: 10,
           durable: true,
           persist: true,
-          qos: 10
+          prefetch: 10
 
   after_run :publish_result
 
@@ -23,30 +23,6 @@ class NormalJob < Jobi::Job
 
   def publish_result
     puts "publishing result: #{@sum}"
-  end
-end
-
-class NormalSecondJob < Jobi::Job
-  options queue_name: :second_calculators,
-          ack: true,
-          consumers: 10,
-          durable: true,
-          persist: true,
-          qos: 10
-
-  after_run :publish_result
-
-  def initialize(a:, b:)
-    @first = a
-    @second = b
-  end
-
-  def run
-    @sum = @first + @second
-  end
-
-  def publish_result
-    puts "[2] publishing result: #{@sum}"
   end
 end
 

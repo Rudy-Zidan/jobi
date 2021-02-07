@@ -28,7 +28,7 @@ module Jobi
 
       def queue(name:, options: {})
         channel = create_channel(name)
-        channel.prefetch(options[:qos])
+        channel.prefetch(options[:prefetch])
         channel.queue(name, build_options(options, QUEUE_OPTIONS))
       end
 

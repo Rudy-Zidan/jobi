@@ -8,7 +8,7 @@ class FirstJob < Jobi::Job
           consumers: 10,
           durable: true,
           persist: true,
-          qos: 10
+          prefetch: 10
 
   after_run :publish_result
 
@@ -32,7 +32,7 @@ class SecondJob < Jobi::Job
           consumers: 10,
           durable: true,
           persist: true,
-          qos: 10
+          prefetch: 10
 
   after_run :publish_result
 

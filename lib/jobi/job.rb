@@ -6,13 +6,23 @@ module Jobi
     class << self
       include Utils
 
+      # Initialize Job's options.
+      #
+      # @param options [Hash]
+      #   contains the following keys:
+      #     - 'queue_name' [String]
+      #     - 'prefetch' [Integer] by default is equal to 5, represent how many messages can be aknowledge by the consumer.
+      #     - 'ack' [Boolean] force message acknowledgment.
+      #     - 'consumers' [Integer] by default is equal to 5, control number of consumers per queue.
+      #     - 'durable' [Boolean] by default is true, control durability of the queue.
+      #     - 'persist' [Boolean] by default is false, persist messages on hard disk.
       def options(options = {})
         @queue_name = options[:queue_name].to_s
-        @qos = options[:qos] || 5
+        @prefetch = options[:prefetch] || 5
         @ack = options[:ack] || false
         @consumers = options[:consumers] || 5
         @durable = options[:durable] || true
-        @persist = options[:persist] ||false
+        @persist = options[:persist] || false
       end
 
       def after_run(callback)
@@ -89,7 +99,7 @@ module Jobi
           name: @queue_name,
           options: {
             durable: @durable,
-            qos: @qos
+            prefetch: @prefetch
           }
         }
       end
